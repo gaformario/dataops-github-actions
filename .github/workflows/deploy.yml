@@ -34,4 +34,4 @@ jobs:
           docker build -t flask-api .
           docker stop flask-api || true
           docker rm flask-api || true
-          docker run -d -p 80:80 --name flask-api flask-api
+          docker run -d -p 80:5000 --name flask-api flask-api

@@ -1,8 +1,8 @@
+from flask import Flask, request
+from flask_restx import Api, Resource, fields
 import os
 import psycopg2
 import time
-from flask import Flask
-from flask_restx import Api, Resource
 
 app = Flask(__name__)
 api = Api(app, version='1.0', title='Alunos API',
@@ -10,6 +10,16 @@ api = Api(app, version='1.0', title='Alunos API',
           doc='/swagger')
 
 ns = api.namespace('alunos', description='Operações relacionadas a alunos')
+
+soma_model = api.model('Soma', {
+    'a': fields.Float(required=True, description='Primeiro número'),
+    'b': fields.Float(required=True, description='Segundo número')
+})
+
+multiplicacao_model = api.model('Multiplicacao', {
+    'a': fields.Float(required=True, description='Primeiro número'),
+    'b': fields.Float(required=True, description='Segundo número')
+})
 
 def get_connection():
     for i in range(10):
@@ -47,6 +57,30 @@ class AlunosList(Resource):
         cur.close()
         conn.close()
         return {"alunos": [{"id": aluno[0], "nome": aluno[1]} for aluno in alunos]}
+
+@api.route('/soma')
+class Soma(Resource):
+    @api.expect(soma_model)
+    def post(self):
+        """Recebe dois números e retorna a soma"""
+        data = request.get_json()
+        a = data.get('a')
+        b = data.get('b')
+        if a is None or b is None:
+            return {'error': 'Parâmetros a e b são obrigatórios'}, 400
+        return {'resultado': a + b}
+
+@api.route('/multiplicacao')
+class Multiplicacao(Resource):
+    @api.expect(multiplicacao_model)
+    def post(self):
+        """Recebe dois números e retorna o produto"""
+        data = request.get_json()
+        a = data.get('a')
+        b = data.get('b')
+        if a is None or b is None:
+            return {'error': 'Parâmetros a e b são obrigatórios'}, 400
+        return {'resultado': a * b}
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

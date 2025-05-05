@@ -21,21 +21,16 @@ jobs:
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
           mkdir -p ~/app
-
           if [ ! -d ~/app/.git ]; then
             git clone https://github.com/gaformario/dataops-github-actions.git ~/app
           fi
-
           cd ~/app
-
           git pull
-
-          if [ ! -f Dockerfile ]; then
+          if [ ! -f app/Dockerfile ]; then
             echo "Dockerfile não encontrado!"
             exit 1
           fi
-
-          docker build -t flask-api .
+          docker build -t flask-api -f app/Dockerfile .
           docker stop flask-api || true
           docker rm flask-api || true
           docker run -d -p 80:80 --name flask-api flask-api

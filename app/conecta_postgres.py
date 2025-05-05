@@ -5,6 +5,7 @@ import psycopg2
 import time
 
 app = Flask(__name__)
+app.config['SWAGGER_UI_DOC_EXPANSION'] = 'list'
 api = Api(app, version='1.0', title='Cálculos API',
           description='API para cálculos numéricos',
           doc='/swagger')
@@ -35,6 +36,8 @@ def get_connection():
             print("Banco não está pronto, tentando novamente...")
             time.sleep(3)
     raise Exception("Não foi possível conectar ao banco de dados.")
+
+
 @ns.route('/soma')
 class Soma(Resource):
     @api.expect(soma_model)

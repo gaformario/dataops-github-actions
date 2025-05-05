@@ -30,7 +30,8 @@ jobs:
             echo "Dockerfile não encontrado!"
             exit 1
           fi
-          docker build -t flask-api -f app/Dockerfile .
+          cd app
+          docker build -t flask-api .
           docker stop flask-api || true
           docker rm flask-api || true
           docker run -d -p 80:80 --name flask-api flask-api

@@ -9,7 +9,7 @@ api = Api(app, version='1.0', title='Cálculos API',
           description='API para cálculos numéricos',
           doc='/swagger')
 
-ns = api.namespace('Cálculos', description='Cálculos numéricos')
+ns = api.namespace('operacao', description='Cálculos numéricos')
 
 soma_model = api.model('Soma', {
     'a': fields.Float(required=True, description='Primeiro número'),

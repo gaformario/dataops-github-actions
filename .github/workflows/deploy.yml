@@ -16,12 +16,12 @@ jobs:
     - name: Deploy via SSH
       uses: appleboy/ssh-action@v0.1.8
       with:
-        host: ${{ secrets.SERVER_HOST }}
+        host: ${{ secrets.IP }}
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
           cd ~/app
-          git pull origin main
+          git pull
           docker build -t flask-api .
           docker stop flask-api || true
           docker rm flask-api || true

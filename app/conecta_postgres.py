@@ -5,11 +5,11 @@ import psycopg2
 import time
 
 app = Flask(__name__)
-api = Api(app, version='1.0', title='Alunos API',
-          description='API para cadastro e consulta de alunos',
+api = Api(app, version='1.0', title='Cálculos API',
+          description='API para cálculos numéricos',
           doc='/swagger')
 
-ns = api.namespace('alunos', description='Operações relacionadas a alunos')
+ns = api.namespace('Cálculos', description='Cálculos numéricos')
 
 soma_model = api.model('Soma', {
     'a': fields.Float(required=True, description='Primeiro número'),
@@ -35,30 +35,7 @@ def get_connection():
             print("Banco não está pronto, tentando novamente...")
             time.sleep(3)
     raise Exception("Não foi possível conectar ao banco de dados.")
-
-@ns.route('/')
-class AlunosList(Resource):
-    def get(self):
-        """Lista todos os alunos"""
-        time.sleep(5)  # Espera o banco iniciar
-        conn = get_connection()
-        cur = conn.cursor()
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS alunos (
-                id SERIAL PRIMARY KEY,
-                nome VARCHAR(50)
-            );
-        """)
-        conn.commit()
-        cur.execute("INSERT INTO alunos (nome) VALUES ('Maria'), ('João') ON CONFLICT DO NOTHING;")
-        conn.commit()
-        cur.execute("SELECT * FROM alunos;")
-        alunos = cur.fetchall()
-        cur.close()
-        conn.close()
-        return {"alunos": [{"id": aluno[0], "nome": aluno[1]} for aluno in alunos]}
-
-@api.route('/soma')
+@ns.route('/soma')
 class Soma(Resource):
     @api.expect(soma_model)
     def post(self):
@@ -70,7 +47,7 @@ class Soma(Resource):
             return {'error': 'Parâmetros a e b são obrigatórios'}, 400
         return {'resultado': a + b}
 
-@api.route('/multiplicacao')
+@ns.route('/multiplicacao')
 class Multiplicacao(Resource):
     @api.expect(multiplicacao_model)
     def post(self):

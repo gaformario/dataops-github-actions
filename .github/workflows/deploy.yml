@@ -26,12 +26,5 @@ jobs:
           fi
           cd ~/app
           git pull
-          if [ ! -f app/Dockerfile ]; then
-            echo "Dockerfile não encontrado!"
-            exit 1
-          fi
-          cd app
-          docker build -t flask-api .
-          docker stop flask-api || true
-          docker rm flask-api || true
-          docker run -d -p 80:5000 --name flask-api flask-api
+          docker compose down || true
+          docker compose up -d --build

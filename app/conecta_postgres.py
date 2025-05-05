@@ -1,3 +1,4 @@
+import os
 import psycopg2
 import time
 from flask import Flask
@@ -11,13 +12,19 @@ api = Api(app, version='1.0', title='Alunos API',
 ns = api.namespace('alunos', description='Operações relacionadas a alunos')
 
 def get_connection():
-    conn = psycopg2.connect(
-        host="db",
-        database="postgres",
-        user="postgres",
-        password="senha123"
-    )
-    return conn
+    for i in range(10):
+        try:
+            conn = psycopg2.connect(
+                host=os.environ.get("DB_HOST", "db"),
+                database=os.environ.get("DB_NAME", "postgres"),
+                user=os.environ.get("DB_USER", "postgres"),
+                password=os.environ.get("DB_PASS", "senha123")
+            )
+            return conn
+        except psycopg2.OperationalError:
+            print("Banco não está pronto, tentando novamente...")
+            time.sleep(3)
+    raise Exception("Não foi possível conectar ao banco de dados.")
 
 @ns.route('/')
 class AlunosList(Resource):

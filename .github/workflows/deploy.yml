@@ -20,8 +20,21 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
+          mkdir -p ~/app
+
+          if [ ! -d ~/app/.git ]; then
+            git clone https://github.com/gaformario/dataops-github-actions.git ~/app
+          fi
+
           cd ~/app
+
           git pull
+
+          if [ ! -f Dockerfile ]; then
+            echo "Dockerfile não encontrado!"
+            exit 1
+          fi
+
           docker build -t flask-api .
           docker stop flask-api || true
           docker rm flask-api || true

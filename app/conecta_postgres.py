@@ -60,22 +60,24 @@ class AlunosList(Resource):
 
 @api.route('/soma')
 class Soma(Resource):
-    @api.doc(params={'a': 'Primeiro número', 'b': 'Segundo número'})
+    @api.expect(soma_model)
     def post(self):
         """Recebe dois números e retorna a soma"""
-        a = request.form.get('a', type=float)
-        b = request.form.get('b', type=float)
+        data = request.get_json()
+        a = data.get('a')
+        b = data.get('b')
         if a is None or b is None:
             return {'error': 'Parâmetros a e b são obrigatórios'}, 400
         return {'resultado': a + b}
 
 @api.route('/multiplicacao')
 class Multiplicacao(Resource):
-    @api.doc(params={'a': 'Primeiro número', 'b': 'Segundo número'})
+    @api.expect(multiplicacao_model)
     def post(self):
         """Recebe dois números e retorna o produto"""
-        a = request.form.get('a', type=float)
-        b = request.form.get('b', type=float)
+        data = request.get_json()
+        a = data.get('a')
+        b = data.get('b')
         if a is None or b is None:
             return {'error': 'Parâmetros a e b são obrigatórios'}, 400
         return {'resultado': a * b}

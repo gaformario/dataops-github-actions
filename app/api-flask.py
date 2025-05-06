@@ -7,7 +7,7 @@ import time
 app = Flask(__name__)
 app.config['SWAGGER_UI_DOC_EXPANSION'] = 'list'
 api = Api(app, version='1.0', title='Cálculos API',
-          description='API para cálculos numéricos',
+          description='API para cálculos numéricos\n\nMade by Gabriel Formario - 2025',
           doc='/swagger')
 
 ns = api.namespace('operacao', description='Cálculos numéricos')
